@@ -1,10 +1,7 @@
-<script setup>
-const props = defineProps({
-  cocktail: {
-    type: Object,
-    required: true,
-  },
-});
+<script setup lang="ts">
+import type { Drink } from '../types';
+
+defineProps<{ cocktail: Drink }>();
 </script>
 
 <template>

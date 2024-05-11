@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import AppLayout from "../components/AppLayout.vue";
 import CocktailThumb from "../components/CocktailThumb.vue";
-import { useRootStore } from "@/stores/root";
+import { useRootStore } from "../stores/root";
 import { storeToRefs } from "pinia";
 
 const rootStore = useRootStore();
@@ -9,11 +9,11 @@ rootStore.getIngredients();
 
 const { ingredients, ingredient, cocktails } = storeToRefs(rootStore);
 
-function getCocktails() {
+function getCocktails():void {
   rootStore.getCocktails(rootStore.ingredient);
 }
 
-function removeIngredient() {
+function removeIngredient():void {
   rootStore.setIngredient(null);
 }
 </script>

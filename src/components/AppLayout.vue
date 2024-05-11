@@ -1,21 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { RouteRecordName, useRoute, useRouter } from "vue-router";
 import { Back } from "@element-plus/icons-vue";
-import { ROUTES_PATHS } from "@/constants";
+import { ROUTES_PATHS } from "../constants";
 
-const props = defineProps({
-  imgUrl: {
-    type: String,
-    required: true,
-  },
-  backFunc: {
-    type: Function,
-  },
-  isBackButtonVisible: {
-    type: Boolean,
-    default: true,
-  },
+const props = withDefaults(defineProps<{
+  imgUrl: string,
+  backFunc?: () => void,
+  isBackButtonVisible: boolean,
+}>(), {
+    isBackButtonVisible: true,
 });
 
 const route = useRoute();
@@ -23,15 +17,15 @@ const router = useRouter();
 
 const routeName = computed(() => route.name);
 
-function goForCocktailRandom() {
+function goForCocktailRandom():void {
   router.push(ROUTES_PATHS.COCKTAIL_RANDOM);
 
   if (routeName.value === ROUTES_PATHS.COCKTAIL_RANDOM) {
-    router.go();
+    router.go(0);
   }
 }
 
-function goBack() {
+function goBack():void {
   props.backFunc ? props.backFunc() : router.go(-1);
 }
 </script>

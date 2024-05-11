@@ -1,20 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import axios from "axios";
 import { ref, computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
-import { COCKTAIL_RANDOM, INGREDIENT_PIC } from "@/constants";
+import { COCKTAIL_RANDOM, INGREDIENT_PIC } from "../constants";
 import AppLayout from "../components/AppLayout.vue";
+import type { Drink, Ingredient, ServerData } from "../types";
 
-const cocktail = ref(null);
+const cocktail = ref<Drink>();
 
-const ingredients = computed(() => {
-  const ingredients = [];
+const ingredients = computed(():Ingredient[] => {
+  const ingredients:Ingredient[] = [];
 
   for (let i = 1; i <= 15; i++) {
-    if (!cocktail.value[`strIngredient${i}`]) break;
+    if (!cocktail.value || !(`strIngredient${i}` in cocktail.value)) break;
 
-    const ingredient = cocktail.value[`strIngredient${i}`];
+    const ingredient = {
+        strIngredient1: cocktail.value[`strIngredient${i}` as keyof Drink]
+    };
 
     ingredients.push(ingredient);
   }
@@ -22,8 +25,8 @@ const ingredients = computed(() => {
   return ingredients;
 });
 
-async function getCocktail() {
-  const data = await axios.get(COCKTAIL_RANDOM);
+async function getCocktail():Promise<void> {
+  const data = await axios.get<ServerData>(COCKTAIL_RANDOM);
   cocktail.value = data?.data?.drinks[0];
 }
 
@@ -39,10 +42,10 @@ getCocktail();
           <div class="line"></div>
           <div class="slider">
             <swiper :slides-per-view="3" :space-between="50" class="swiper">
-              <swiper-slide v-for="(ingredient, key) in ingredients" :key="key">
-                <img :src="`${INGREDIENT_PIC}${ingredient}-Small.png`" />
+              <swiper-slide v-for="(item, key) in ingredients" :key="key">
+                <img :src="`${INGREDIENT_PIC}${item.strIngredient1}-Small.png`" />
                 <div class="name">
-                  {{ ingredient }}
+                  {{ item.strIngredient1 }}
                 </div>
               </swiper-slide>
             </swiper>
